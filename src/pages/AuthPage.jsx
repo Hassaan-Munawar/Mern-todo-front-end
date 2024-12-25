@@ -77,6 +77,7 @@ const AuthPage = () => {
                                 Full Name
                             </label>
                             <input
+                                required
                                 value={fullname}
                                 onChange={(e) => { setfullname(e.target.value), seterror('') }}
                                 type="text"
@@ -92,6 +93,7 @@ const AuthPage = () => {
                             Email
                         </label>
                         <input
+                            required
                             value={email}
                             onChange={(e) => { setemail(e.target.value), seterror('') }}
                             type="email"
@@ -106,6 +108,7 @@ const AuthPage = () => {
                             Password
                         </label>
                         <input
+                            required
                             value={password}
                             onChange={(e) => { setpassword(e.target.value), seterror('') }}
                             type="password"

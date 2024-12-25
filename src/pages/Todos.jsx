@@ -5,7 +5,6 @@ import {
   faTrash,
   faEdit,
   faCheck,
-  faUndo,
   faMoon,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
@@ -39,12 +38,16 @@ const Todos = () => {
   const addTodo = () => {
     if (todo.trim() === "") return;
     axios
-      .post(AppRoutes.addTask, { todo }, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      })
-      .then((res) => {
+      .post(
+        AppRoutes.addTask,
+        { todo },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      )
+      .then(() => {
         setTodo("");
         getTodos();
       });
@@ -61,17 +64,17 @@ const Todos = () => {
   };
 
   const handleEditTodo = (todoId, updatedTodo) => {
-    if(updatedTodo){
-
-      axios
-      .put(`${AppRoutes.updateTask}/${todoId}`, { todo: updatedTodo }, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("token")}`,
-        },
-      })
+    axios
+      .put(
+        `${AppRoutes.updateTask}/${todoId}`,
+        { todo: updatedTodo },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      )
       .then(() => getTodos());
-    }
-   
   };
 
   const toggleDarkMode = () => {
@@ -79,6 +82,7 @@ const Todos = () => {
   };
 
   const handleSaveEdit = (todoId) => {
+    if (editText.trim() === "") return;
     handleEditTodo(todoId, editText);
     setEditingTodo(null);
     setEditText("");
@@ -91,35 +95,36 @@ const Todos = () => {
       }`}
     >
       <div className="max-w-3xl mx-auto p-4">
-        <header className="flex justify-center items-center mb-6">
-          <button
-            onClick={toggleDarkMode}
-            className={`px-4 py-2 rounded-lg transition ${
-              darkMode
-                ? "bg-yellow-500 hover:bg-yellow-600 text-gray-900"
-                : "bg-blue-500 hover:bg-blue-600 text-white"
-            }`}
-          >
-            <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
-          </button>
+        {/* Header */}
+        <header className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold">
+            🖐️ Hi, {user?.fullName}
+          </h2>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => {
+                setUser(null);
+                Cookies.set("token", null);
+              }}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
+            <button
+              onClick={toggleDarkMode}
+              className={`px-4 py-2 rounded-lg transition ${
+                darkMode
+                  ? "bg-yellow-500 hover:bg-yellow-600 text-gray-900"
+                  : "bg-blue-500 hover:bg-blue-600 text-white"
+              }`}
+            >
+              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
+            </button>
+          </div>
         </header>
 
-        {/* Welcome Message */}
-        <div className="flex justify-between mb-6">
-          <h2 className="text-xl font-semibold">{`Hello ${user?.fullName}`}</h2>
-          <button
-            onClick={() => {
-              setUser(null);
-              Cookies.set("token", null);
-            }}
-            className="bg-red-500 text-white rounded p-2 px-4"
-          >
-            Logout
-          </button>
-        </div>
-
         {/* Add Todo Input */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mb-6">
           <input
             type="text"
             placeholder="Add a new todo"
@@ -134,7 +139,11 @@ const Todos = () => {
           <button
             onClick={addTodo}
             disabled={todo.length < 4}
-            className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
+            className={`px-4 py-2 rounded-lg ${
+              todo.length < 4
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 text-white transition"
+            }`}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
@@ -145,7 +154,7 @@ const Todos = () => {
           {todos.map((todoData) => (
             <li
               key={todoData._id}
-              className={`flex flex-col sm:flex-row justify-between items-center p-4 rounded-lg shadow mb-3 ${
+              className={`flex justify-between items-center p-4 rounded-lg shadow ${
                 darkMode ? "bg-gray-800" : "bg-white"
               }`}
             >
@@ -154,7 +163,7 @@ const Todos = () => {
                   type="text"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className={`flex-1 px-4 py-2 border rounded-lg focus:outline-none ${
+                  className={`flex-1 px-4 py-2 mr-1 border rounded-lg focus:outline-none ${
                     darkMode
                       ? "bg-gray-800 border-gray-700 text-white"
                       : "border-gray-300"
@@ -163,7 +172,7 @@ const Todos = () => {
               ) : (
                 <span className="flex-1 text-lg">{todoData.todo}</span>
               )}
-              <div className="flex space-x-2 mt-2 sm:mt-0">
+              <div className="flex space-x-2">
                 {editingTodo === todoData._id ? (
                   <button
                     onClick={() => handleSaveEdit(todoData._id)}
@@ -172,26 +181,22 @@ const Todos = () => {
                     <FontAwesomeIcon icon={faCheck} />
                   </button>
                 ) : (
-                  <>
-                    <button
-                      onClick={() =>
-                        handleEditTodo(
-                          todoData._id,
-                          prompt("Edit todo:", todoData.todo)
-                        )
-                      }
-                      className="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition"
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteTodo(todoData._id)}
-                      className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </>
+                  <button
+                    onClick={() => {
+                      setEditingTodo(todoData._id);
+                      setEditText(todoData.todo);
+                    }}
+                    className="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600 transition"
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                  </button>
                 )}
+                <button
+                  onClick={() => handleDeleteTodo(todoData._id)}
+                  className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 transition"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               </div>
             </li>
           ))}
@@ -199,7 +204,9 @@ const Todos = () => {
 
         {/* Message for Empty Todos */}
         {todos.length === 0 && (
-          <p className="text-center text-gray-500 mt-4">No todos yet. Add one!</p>
+          <p className="text-center text-gray-500 mt-6">
+            No todos yet. Add one!
+          </p>
         )}
       </div>
     </div>
@@ -207,7 +214,3 @@ const Todos = () => {
 };
 
 export default Todos;
-
-
-
-
