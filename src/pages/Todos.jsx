@@ -90,9 +90,8 @@ const Todos = () => {
 
   return (
     <div
-      className={`min-h-screen ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
-      }`}
+      className={`min-h-screen ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+        }`}
     >
       <div className="max-w-3xl mx-auto p-4">
         {/* Header */}
@@ -112,11 +111,10 @@ const Todos = () => {
             </button>
             <button
               onClick={toggleDarkMode}
-              className={`px-4 py-2 rounded-lg transition ${
-                darkMode
+              className={`px-4 py-2 rounded-lg transition ${darkMode
                   ? "bg-yellow-500 hover:bg-yellow-600 text-gray-900"
                   : "bg-blue-500 hover:bg-blue-600 text-white"
-              }`}
+                }`}
             >
               <FontAwesomeIcon icon={darkMode ? faSun : faMoon} />
             </button>
@@ -130,20 +128,18 @@ const Todos = () => {
             placeholder="Add a new todo"
             value={todo}
             onChange={(e) => setTodo(e.target.value)}
-            className={`flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 mb-2 sm:mb-0 ${
-              darkMode
+            className={`flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 mb-2 sm:mb-0 ${darkMode
                 ? "bg-gray-800 border-gray-700 text-white focus:ring-yellow-500"
                 : "focus:ring-blue-500"
-            }`}
+              }`}
           />
           <button
             onClick={addTodo}
             disabled={todo.length < 4}
-            className={`px-4 py-2 rounded-lg ${
-              todo.length < 4
+            className={`px-4 py-2 rounded-lg ${todo.length < 4
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600 text-white transition"
-            }`}
+              }`}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
@@ -154,20 +150,18 @@ const Todos = () => {
           {todos.map((todoData) => (
             <li
               key={todoData._id}
-              className={`flex justify-between items-center p-4 rounded-lg shadow ${
-                darkMode ? "bg-gray-800" : "bg-white"
-              }`}
+              className={`flex justify-between items-center p-4 rounded-lg shadow ${darkMode ? "bg-gray-800" : "bg-white"
+                }`}
             >
               {editingTodo === todoData._id ? (
                 <input
                   type="text"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className={`flex-1 px-4 py-2 mr-1 border rounded-lg focus:outline-none ${
-                    darkMode
+                  className={`flex-1 px-4 py-2 mr-1 border rounded-lg focus:outline-none ${darkMode
                       ? "bg-gray-800 border-gray-700 text-white"
                       : "border-gray-300"
-                  }`}
+                    }`}
                 />
               ) : (
                 <span className="flex-1 text-lg">{todoData.todo}</span>
@@ -204,9 +198,11 @@ const Todos = () => {
 
         {/* Message for Empty Todos */}
         {todos.length === 0 && (
-          <p className="text-center text-gray-500 mt-6">
-            No todos yet. Add one!
-          </p>
+            <div className="flex justify-center space-x-4">
+              <div className="w-8 h-8 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-8 h-8 bg-blue-500 rounded-full animate-bounce delay-200"></div>
+              <div className="w-8 h-8 bg-blue-500 rounded-full animate-bounce delay-400"></div>
+            </div>
         )}
       </div>
     </div>
